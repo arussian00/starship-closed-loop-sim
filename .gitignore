@@ -1,0 +1,7 @@
+*.asv
+*.slx
+*.slxc
+slprj/
+octave-workspace
+*.mat
+*.mex
