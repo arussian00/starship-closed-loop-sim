@@ -34,17 +34,18 @@ if nargin < 2 || isempty(tag)
 end
 name = char(name);
 mode = closed_loop_figure_mode();
+T = closed_loop_theme();
 fig = find_tagged(tag);
 if isempty(fig)
     fig = figure('Name', name, 'Tag', tag, 'NumberTitle', 'off', ...
-        'Color', 'w', 'Visible', 'on');
+        'Color', T.figure, 'Visible', 'on');
 else
     safe_set(fig, 'SizeChangedFcn', '');
     safe_set(fig, 'ResizeFcn', '');
     figure(fig);
     clf(fig);
     safe_set(fig, 'Name', name, 'Tag', tag, 'NumberTitle', 'off', ...
-        'Color', 'w', 'Visible', 'on');
+        'Color', T.figure, 'Visible', 'on');
     setappdata(fig, 'ClosedLoopReflowing', false);
 end
 closed_loop_theme('figure', fig);
@@ -68,6 +69,7 @@ function raise_figure(fig)
 if ~is_figure(fig)
     return
 end
+closed_loop_theme('refresh', fig);
 drawnow;
 apply_mode(fig, closed_loop_figure_mode());
 end
