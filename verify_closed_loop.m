@@ -18,6 +18,7 @@ if isempty(here)
 end
 addpath(here);
 rehash;
+check_run_options();
 setup_paths();
 
 cfg = closed_loop_config();

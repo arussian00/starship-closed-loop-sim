@@ -36,7 +36,7 @@ run_closed_loop
 
 If a reset is interrupted, `!git restore --source=HEAD -- .` puts the last good tree back, then run the four cache lines again.
 
-The mission-control window is one figure, tag `starshipClosedLoop`, reused on the next run. It opens maximized (`cfg.figureMode = 'maximized'` in `closed_loop_config.m`) and the panel fonts scale when the window changes size. Set `cfg.figureMode = 'docked'` to dock it. The figure background stays white. Graph interiors stay dark. Axis titles, tick labels, and legends that sit on the white background are near-black and bold. On R2025a and newer the figure `Theme` is set to `'light'`.
+The mission-control window is one figure, tag `starshipClosedLoop`, reused on the next run. It opens maximized (`cfg.figureMode = 'maximized'` in `closed_loop_config.m`) and the panel fonts scale when the window changes size. Set `cfg.figureMode = 'docked'` to dock it. The figure margin is dark and each graph interior stays the same dark grey. Line colors are unchanged and gridlines stay grey. Titles, axis labels, tick numbers, and in-plot readouts, including the live HUD and the controller-off label, are near-white `#F0F0F0`. Legends stay a white box with near-black text, a near-black edge, and the same font. On R2025a and newer the figure `Theme` is set to `'light'`, then these colors are applied again after every redraw. `run_closed_loop`, `run_closed_loop(2)`, and `run_closed_loop(1, false)` all fill in any arguments you leave off.
 
 Needs **Control System Toolbox** only if you want `design_pitch_controller` to supply the gains. The flight itself uses the same formulas that function uses by default (`Kq = 2`, `Kth = 0.5`, `KiTh = 0.01`), so the ascent runs on core MATLAB. **Simulink** is not required to fly. It is used when you ask for a `sim('boosterPitchTVC')` check and Simulink is installed. If the controller cannot be built, the open-loop mission still plays and the window says `controller unavailable: <reason>`.
 
@@ -114,7 +114,7 @@ The full mission in still air:
 
 Peak gimbal on the closed-loop ascent was **3.42 deg** (stop 15 deg). Peak `|q*alpha|` was **1.03 kPa·deg**. Peak pitch-tracking error was **3.81 deg**. Through the stack, the 30 s samples sit near zero angle of attack (the 20 s climb peaked at 0.51 deg); the larger error is later, as the ship acquires the altitude-hold attitude. The booster return and the ship belly-flop were the sim's guidance. A positive design gust reduces angle of attack (checked: 0 deg in still air, -4.3 deg with the 15 m/s gust at 200 m/s), which is the sign of `gustAccPerWind`.
 
-`verify_closed_loop` repeats those checks. `verify_closed_loop('core')` stops before the full mission. Octave is only the headless check; the flight code is MATLAB. `sim('boosterPitchTVC')` runs when `sim` and `build_pitch_model` are on the path. A thrown `sim` is caught and the discrete step is kept.
+`verify_closed_loop` repeats those checks and starts with `check_run_options`, which calls `run_closed_loop`, `run_closed_loop(2)`, `run_closed_loop(1, false)`, and the documented wind forms with the animation left off. That check returns as soon as the arguments parse, so it does not fly. `check_figure_text` builds an invisible figure and checks the near-white text, the untouched legend, and the unchanged line colors. `verify_closed_loop('core')` stops before the full mission. Octave is only the headless check; the flight code is MATLAB. `sim('boosterPitchTVC')` runs when `sim` and `build_pitch_model` are on the path. A thrown `sim` is caught and the discrete step is kept.
 
 ## Files
 
@@ -132,5 +132,7 @@ Peak gimbal on the closed-loop ascent was **3.42 deg** (stop 15 deg). Peak `|q*a
 | `closed_loop_extensions.m` | Guarded hooks for steps 3-6 |
 | `pitch_step_reference.m` | 1 ms diagram and optional `sim('boosterPitchTVC')` |
 | `verify_closed_loop.m` | Headless checks |
+| `check_run_options.m` | Documented `run_closed_loop` argument forms |
+| `check_figure_text.m` | Near-white text on an invisible figure |
 | `animate_closed_loop.m` | The one mission-control window |
 | `present_figure.m`, `closed_loop_theme.m`, `mission_control_layout.m` | Window, colors, panel positions |

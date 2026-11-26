@@ -310,17 +310,12 @@ for k = 1:numel(tf)
         sky = min(max(cy, 0) / 80e3, 1) ^ 0.5;
         set(ax, 'Color', (1 - sky) * [0.53 0.81 0.98] + sky * [0.02 0.02 0.08]);
         axis(ax, [cx - W, cx + W, cy - W, cy + W]);
-        if sky > 0.5
-            hc = T.inPlot;
-        else
-            hc = T.text;
-        end
         if cam == 1
             str = hud_text('SUPER HEAVY', phaseName, b, k);
         else
             str = hud_text('STARSHIP', phaseName, s, k);
         end
-        set(g.hud, 'String', str, 'Color', hc);
+        set(g.hud, 'String', str, 'Color', T.text);
     end
 
     tm = tf(1:k) / 60;
@@ -340,6 +335,7 @@ for k = 1:numel(tf)
     for j = 1:4
         xlim(axC{j}, xl);
     end
+    closed_loop_theme('refresh', fig);
     drawnow
     if ~raised
         present_figure('raise', fig);
@@ -448,9 +444,9 @@ function style_legend(leg, T)
 if isempty(leg) || ~ishghandle(leg)
     return
 end
-try_set(leg, 'TextColor', T.text);
+try_set(leg, 'TextColor', T.legendText);
 try_set(leg, 'Color', T.legendBack);
-try_set(leg, 'EdgeColor', T.text);
+try_set(leg, 'EdgeColor', T.legendEdge);
 try_set(leg, 'FontSize', T.fontSmall);
 end
 

@@ -31,7 +31,19 @@ end
 addpath(here);
 rehash;
 
+% A missing input cannot be read. Fill those in before the call.
+if nargin < 1, speed = []; end
+if nargin < 2, showAnimation = []; end
+if nargin < 3, wind = []; end
 opts = parse_run_options(speed, showAnimation, wind);
+if options_probe()
+    % check_run_options sets this and stops after parsing, so the probe
+    % does not fly or open a window.
+    if nargout > 0
+        varargout{1} = opts;
+    end
+    return
+end
 if opts.showAnimation
     present_figure('closeothers');
 end
@@ -132,6 +144,16 @@ closed.metricsS = nominal.metricsS;
 closed.fullB = nominal.fullB;
 closed.fullS = nominal.fullS;
 closed.notes = {closed.controllerNote};
+end
+
+
+function tf = options_probe()
+tf = false;
+try
+    tf = isappdata(0, 'ClosedLoopOptionsProbe') && getappdata(0, 'ClosedLoopOptionsProbe');
+catch
+    tf = false;
+end
 end
 
 
