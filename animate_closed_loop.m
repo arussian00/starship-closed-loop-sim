@@ -315,7 +315,7 @@ for k = 1:numel(tf)
         else
             str = hud_text('STARSHIP', phaseName, s, k);
         end
-        set(g.hud, 'String', str, 'Color', T.text);
+        set(g.hud, 'String', str);
     end
 
     tm = tf(1:k) / 60;
